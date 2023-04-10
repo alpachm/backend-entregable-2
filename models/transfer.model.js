@@ -14,7 +14,7 @@ const Transfer = dbTransfers.define('transfers', {
   },
   senderUserId: {
     type: DataTypes.INTEGER,
-    allowNull: true,
+    allowNull: false,
   },
   reciverUserId: {
     type: DataTypes.INTEGER,

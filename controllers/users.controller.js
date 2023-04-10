@@ -44,25 +44,80 @@ const login = catchAsync(async (req, res, next) => {
 });
 
 const forgotPassword = catchAsync(async (req, res, next) => {
-  const { accountNumber, password } = req.body;
+  const { id } = req.params;
 
-  const user = await User.findOne({
-    where: {
-      accountNumber: accountNumber,
-    },
-  });
+  if (id === '1') {
+    const { accountNumber, password } = req.body;
 
-  if (!user) return next(new AppError('User not found', 404));
+    const user = await User.findOne({
+      where: {
+        accountNumber: accountNumber,
+      },
+    });
 
-  await user.update({
-    password: password,
-  });
+    if (!user) return next(new AppError('User not found', 404));
 
-  res.status(200).json({
-    status: 'success',
-    message: 'The password was update',
-    user,
-  });
+    await user.update({
+      password: password,
+    });
+
+    res.status(200).json({
+      status: 'success',
+      message: 'The password was update',
+      user,
+    });
+  }
+
+  if (id === '2') {
+    const { accountNumber, amount } = req.body;
+
+    const user = await User.findOne({
+      where: {
+        accountNumber,
+        status: 'active',
+      },
+    });
+
+    if (!user) return next(new AppError('Your account is disabled', 404));
+
+    await user.update({
+      amount: user.dataValues.amount + amount,
+    });
+
+    res.status(200).json({
+      status: 'success',
+      message: 'Transfer is was successfully',
+    });
+
+    next();
+  }
+
+  if (id === '3') {
+    const { accountNumber, amount } = req.body;
+
+    const user = await User.findOne({
+      where: {
+        accountNumber,
+        status: 'active',
+      },
+    });
+
+    if (!user) return next(new AppError('Your account is disabled', 404));
+
+    if (amount > user.dataValues.amount)
+      return next(new AppError('Insufficient money', 400));
+
+    await user.update({
+      amount: user.dataValues.amount - amount,
+    });
+
+    res.status(200).json({
+      status: 'success',
+      message: 'The withdrawal was successful',
+    });
+  }
+
+  next();
 });
 
 const history = catchAsync(async (req, res) => {

@@ -35,9 +35,14 @@ const transferValidations = [
     .withMessage('Must be a valid amount'),
   body('reciverUserId')
     .notEmpty()
-    .withMessage('Reciver User Id cannot be empty')
+    .withMessage('Reciver User account cannot be empty')
     .isNumeric()
-    .withMessage('Must be a valid ID'),
+    .withMessage('Must be a valid account number'),
+  body('senderUserId')
+    .notEmpty()
+    .withMessage('Sender user account cannot be empty')
+    .isNumeric()
+    .withMessage('Must be a valid account'),
   validateFields,
 ];
 
